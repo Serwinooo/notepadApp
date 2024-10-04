@@ -47,7 +47,81 @@ function createTable() {
     document.execCommand('insertHTML', false, tableHTML);
 }
 
+// Function to toggle the drawing canvas
+function toggleCanvas() {
+    const canvas = document.getElementById('drawingCanvas');
+    const button = document.getElementById('insertDrawingBtn');
+    if (canvas.style.display === 'none') {
+        canvas.style.display = 'block';
+        button.style.display = 'inline-block';
+        startDrawing();
+    } else {
+        canvas.style.display = 'none';
+        button.style.display = 'none';
+    }
+}
 
+// Drawing functionality
+let drawing = false;
+let context = null;
+
+function startDrawing() {
+    const canvas = document.getElementById('drawingCanvas');
+    context = canvas.getContext('2d');
+
+    canvas.addEventListener('mousedown', function() {
+        drawing = true;
+    });
+
+    canvas.addEventListener('mouseup', function() {
+        drawing = false;
+        context.beginPath();
+    });
+
+    canvas.addEventListener('mousemove', function(event) {
+        if (drawing) {
+            context.lineWidth = 2;
+            context.lineCap = 'round';
+            context.strokeStyle = 'black';
+            context.lineTo(event.offsetX, event.offsetY);
+            context.stroke();
+            context.beginPath();
+            context.moveTo(event.offsetX, event.offsetY);
+        }
+    });
+}
+
+// Function to insert the drawing into the note
+function insertDrawing() {
+    const canvas = document.getElementById('drawingCanvas');
+    const dataURL = canvas.toDataURL();
+    const imgHTML = `<img src="${dataURL}" alt="Drawing" style="max-width:100px; margin:5px 0;"/>`;
+    document.getElementById('noteContent').focus();
+    document.execCommand('insertHTML', false, imgHTML);
+    toggleCanvas(); // Hide the canvas after inserting
+}
+
+// Handle file uploads
+function handleFileUpload(event) {
+    const files = event.target.files;
+    const noteContent = document.getElementById('noteContent');
+
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const imgHTML = `<img src="${e.target.result}" alt="Image" style="max-width:100px; margin:5px 0;"/>`;
+                noteContent.focus();
+                document.execCommand('insertHTML', false, imgHTML);
+            };
+            reader.readAsDataURL(file);
+        }        
+    }
+}
+
+// Handle back button
 document.getElementById('backBtn').onclick = function () {
     location.href = '../index.html';
 }

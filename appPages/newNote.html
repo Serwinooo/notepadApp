@@ -11,6 +11,22 @@
             border: 1px solid #ccc;
             padding: 10px;
             margin-top: 10px;
+            overflow-y: auto; /* Add overflow for scroll */
+        }
+        #drawingCanvas {
+            display: none; /* Initially hidden */
+            border: 1px solid #ccc;
+            cursor: crosshair;
+        }
+        .file-list-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            width: 100%; /* Ensure full width for container */
+        }
+        .file-list-item img {
+            max-width: 50px; /* Thumbnail size */
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -25,6 +41,8 @@
     <button onclick="formatText('italic')">Italic</button>
     <button onclick="createList()">Add List</button>
     <button onclick="createTable()">Add Table</button>
+    <button onclick="toggleCanvas()">Draw</button>
+    <input type="file" id="fileInput" accept="image/*,.pdf" onchange="handleFileUpload(event)" />
     
     <label for="fontSize">Font Size:</label>
     <select id="fontSize" onchange="changeFontSize()">
@@ -32,6 +50,9 @@
         <option value="4">Large</option>
         <option value="5">X-Large</option>
     </select>
+
+    <canvas id="drawingCanvas" width="300" height="150"></canvas>
+    <button id="insertDrawingBtn" style="display:none;" onclick="insertDrawing()">Insert Drawing</button>
     
     <div id="noteContent" contenteditable="true" placeholder="Your Note...">
     </div>

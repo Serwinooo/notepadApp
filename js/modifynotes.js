@@ -6,6 +6,9 @@ function displayNotes() {
     const notesList = document.getElementById('notesList');
     notesList.innerHTML = '';  // Clear previous content
 
+    // Retrieve notes from localStorage
+    const notes = JSON.parse(localStorage.getItem('notes')) || [];
+
     if (notes.length > 0) {
         notes.forEach((note, index) => {
             const noteElement = document.createElement('div');
