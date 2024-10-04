@@ -121,6 +121,53 @@ function handleFileUpload(event) {
     }
 }
 
+let penColor = '#000000'; // Default color
+
+// Function to change the pen color based on user selection
+function changePenColor() {
+    penColor = document.getElementById('penColor').value;
+}
+
+// Update startDrawing function to use the selected pen color
+function startDrawing() {
+    const canvas = document.getElementById('drawingCanvas');
+    context = canvas.getContext('2d');
+
+    canvas.addEventListener('mousedown', function() {
+        drawing = true;
+    });
+
+    canvas.addEventListener('mouseup', function() {
+        drawing = false;
+        context.beginPath();
+    });
+
+    canvas.addEventListener('mousemove', function(event) {
+        if (drawing) {
+            context.lineWidth = 2;
+            context.lineCap = 'round';
+            context.strokeStyle = penColor; // Use selected pen color
+            context.lineTo(event.offsetX, event.offsetY);
+            context.stroke();
+            context.beginPath();
+            context.moveTo(event.offsetX, event.offsetY);
+        }
+    });
+}
+
+// Function to change the text color of the note content
+function changeTextColor() {
+    const textColor = document.getElementById('textColor').value;
+    document.execCommand('foreColor', false, textColor);
+}
+
+// Function to change the font family of the note content
+function changeFontFamily() {
+    const fontFamily = document.getElementById('fontFamily').value;
+    document.execCommand('fontName', false, fontFamily);
+}
+
+
 // Handle back button
 document.getElementById('backBtn').onclick = function () {
     location.href = '../index.html';
