@@ -9,3 +9,7 @@ document.getElementById('viewNotes').onclick = function () {
 document.getElementById('importantNotes').onclick = function () {
     location.href = 'appPages/importantnotes.html';
 }
+
+document.getElementById('trashNotes').onclick = function () {
+    location.href = 'appPages/trashNotes.html';
+}

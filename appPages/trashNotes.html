@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trash Notes</title>
+</head>
+<body>
+    <h1>Trash</h1>
+    <div id="trashNotesList"></div>
+    <button onclick="permanentlyDeleteSelected()">Permanently Delete Selected</button>
+    <button onclick="restoreSelected()">Restore Selected</button>
+    <button onclick="location.href = '../index.html'">Back</button>
+
+    <script>
+        let trash = JSON.parse(localStorage.getItem('trash')) || [];
+
+        // Display trashed notes
+        function displayTrashNotes() {
+            const trashNotesList = document.getElementById('trashNotesList');
+            let trash = JSON.parse(localStorage.getItem('trash')) || [];
+            trashNotesList.innerHTML = ''; // Clear previous content
+    
+            const now = new Date().getTime();
+            trash = trash.filter(note => (now - note.deletedAt) < (7 * 24 * 60 * 60 * 1000)); // Only keep notes < 7 days old
+            localStorage.setItem('trash', JSON.stringify(trash));
+    
+            if (trash.length > 0) {
+                trash.forEach((note, index) => {
+                    const noteElement = document.createElement('div');
+                    noteElement.innerHTML = `
+                        <input type="checkbox" id="note_${index}">
+                        <h3>${note.title}</h3>
+                        <p>Deleted on: ${new Date(note.deletedAt).toLocaleString()}</p>
+                        <div>${note.content}</div>
+                        <hr>
+                    `;
+                    trashNotesList.appendChild(noteElement);
+                });
+            } else {
+                trashNotesList.innerHTML = '<p>No notes in the trash.</p>';
+            }
+        }
+
+        // Permanently delete selected notes
+        function permanentlyDeleteSelected() {
+            let trash = JSON.parse(localStorage.getItem('trash')) || [];
+            const selectedNotes = [];
+
+            // Collect indexes of selected notes
+            trash.forEach((note, index) => {
+                const checkbox = document.getElementById(`note_${index}`);
+                if (checkbox.checked) {
+                    selectedNotes.push(index);
+                }
+            });
+
+            // Remove selected notes from the trash array
+            selectedNotes.reverse().forEach(index => {
+                trash.splice(index, 1); // Remove the specific note
+            });
+
+            localStorage.setItem('trash', JSON.stringify(trash));
+            displayTrashNotes(); // Refresh the trash list
+        }
+
+        // Restore selected notes
+        function restoreSelected() {
+            let trash = JSON.parse(localStorage.getItem('trash')) || [];
+            let notes = JSON.parse(localStorage.getItem('notes')) || [];
+            const selectedNotes = [];
+
+            // Collect indexes of selected notes
+            trash.forEach((note, index) => {
+                const checkbox = document.getElementById(`note_${index}`);
+                if (checkbox.checked) {
+                    selectedNotes.push(index);
+                }
+            });
+
+            // Restore selected notes to the main notes array
+            selectedNotes.reverse().forEach(index => {
+                const note = trash[index];
+                delete note.deletedAt; // Remove the deletedAt field
+                notes.push(note); // Add it back to the notes array
+                trash.splice(index, 1); // Remove the note from the trash
+            });
+
+            localStorage.setItem('notes', JSON.stringify(notes));
+            localStorage.setItem('trash', JSON.stringify(trash));
+            displayTrashNotes(); // Refresh the trash list
+        }
+
+
+        // Display trash when the page loads
+        displayTrashNotes();
+    </script>
+</body>
+</html>

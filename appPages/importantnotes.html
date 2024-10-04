@@ -12,6 +12,11 @@
             padding: 10px;
             margin-top: 10px;
         }
+        #drawingCanvas {
+            display: none; /* Initially hidden */
+            border: 1px solid #ccc;
+            cursor: crosshair;
+        }
     </style>
 </head>
 <body>
@@ -30,6 +35,8 @@
         <button onclick="formatText('italic')">Italic</button>
         <button onclick="createList()">Add List</button>
         <button onclick="createTable()">Add Table</button>
+        <button onclick="toggleCanvas()">Draw</button>
+        <input type="file" id="fileInput" accept="image/*,.pdf" onchange="handleFileUpload(event)" />
 
         <label for="fontSize">Font Size:</label>
         <select id="fontSize" onchange="changeFontSize()">
@@ -39,6 +46,10 @@
         </select>
 
         <br><br>
+
+        <canvas id="drawingCanvas" width="300" height="150"></canvas>
+        <button id="insertDrawingBtn" style="display:none;" onclick="insertDrawing()">Insert Drawing</button>
+
         <label for="editContent">Note Content:</label>
         <div id="editContent" contenteditable="true" placeholder="Your Note..."></div>
         <br>
