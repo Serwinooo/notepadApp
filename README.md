@@ -56,6 +56,7 @@ Notepad C is a web-based notepad application that allows you to create, view, bo
 - HTML5
 - CSS3
 - JavaScript
+- Electron
 
 ### Setup Instructions
 
